@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat App With Long Polling</title>
+  </head>
+  <body>
+    <input type="text" id="input" placeholder="Your message..." />
+    <button onclick="message(document.getElementById('input').value)">
+      Send
+    </button>
+    <div id="messages"></div>
+    <script>
+      const poll = async () => {
+        try {
+          const res = await fetch("http://localhost:5000/poll");
+          const message = await res.text();
+          document.getElementById("messages").innerHTML += `${message} <br>`;
+        } catch (e) {
+          console.log(e);
+        } finally {
+          poll();
+        }
+      };
+
+      const message = async (message) => {
+        try {
+          const res = await fetch("http://localhost:5000/message", {
+            method: "POST",
+            body: message,
+          });
+        } catch (e) {
+          console.log(e);
+        }
+      };
+
+      poll();
+    </script>
+  </body>
+</html>
